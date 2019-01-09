@@ -12,7 +12,13 @@
                 class="btn btn-lg btn-primary btn-block"
                 replace
             >{{ $t('start_cta') }}</router-link>
-            
+            <router-link
+                v-if="!hasWallet"
+                to="/import"
+                tag="button"
+                class="btn btn-lg btn-primary btn-block"
+                replace
+            >{{ $t('start_cta') }}</router-link>
             <span
                     v-if="hasWallet"
                     class="icon-account"
@@ -102,9 +108,7 @@
             }
         },
         mounted() {
-            this.$store.dispatch("WalletStore/loadWallets", {}).catch( ()=> {
-                
-            });
+            this.$store.dispatch("WalletStore/loadWallets", {});
         },
         methods: {
             unlockWallet() {

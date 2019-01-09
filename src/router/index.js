@@ -3,6 +3,7 @@ import HeaderGuest from "../components/header-guest";
 import HeaderSmall from "../components/header-small";
 import Start from "../components/start";
 import Create from "../components/create";
+import ImportBin from "../components/import-bin";
 import Dashboard from "../components/dashboard";
 
 const router = new VueRouter({
@@ -17,6 +18,13 @@ const router = new VueRouter({
       path: '/create',
       components: {
         default: Create,
+        header: HeaderSmall
+      }
+    },
+    {
+      path: '/import',
+      components: {
+        default: ImportBin,
         header: HeaderSmall
       }
     },
