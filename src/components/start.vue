@@ -107,8 +107,10 @@
                 return this.$store.state.WalletStore.walletlist;
             }
         },
-        mounted() {
-            this.$store.dispatch("WalletStore/loadWallets", {});
+        mounted() {            
+            this.$store.dispatch("WalletStore/loadWallets", {}).catch( ()=> {
+                
+            });
         },
         methods: {
             unlockWallet() {
