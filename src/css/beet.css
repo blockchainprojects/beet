@@ -7065,6 +7065,10 @@ p {
   height: 26rem;
   overflow-y: auto; }
 
+.import-accounts {
+  max-height: 22rem;
+  overflow-y: auto; }
+
 pre {
   border: 1px solid lightgray;
   background: #f3f3f3;
@@ -7234,3 +7238,10 @@ pre {
 .lang-select ul li:hover {
   background: #77c5ec;
   cursor: pointer; }
+
+.alerts {
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  top: 3rem;
+  width: 90%; }

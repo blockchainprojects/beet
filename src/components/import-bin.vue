@@ -8,17 +8,42 @@
             @click="decryptBackup"
              v-if="step1"
         >{{ $t('next_btn') }}</button>
-          <table class="table small table-striped table-sm"  v-if="step2">
-            <tbody>
-                <tr
-                    v-for="account in accounts" 
-                    :key="account.id"
-                >
-                    <td class="text-left">{{ account.name }}</td>
-                    <td class="text-right">{{ account.id }}</td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="import-accounts mt-3" v-if="step2">
+            <table class="table small table-striped table-sm">
+                <thead>
+                    <tr>                    
+                        <th rowspan="2" class="align-middle">Account Name</th>
+                        <th colspan="2" class="align-middle">Active Authority</th>
+                        <th colspan="2" class="align-middle">Owner Authority</th>
+                        <th rowspan="2" class="align-middle">Memo</th>
+                        <th rowspan="2" class="align-middle">Import?</th>
+                    </tr>                
+                    <tr>
+                        <th class="align-middle">Propose</th>
+                        <th class="align-middle">Transact</th>
+                        <th class="align-middle">Propose</th>
+                        <th class="align-middle">Transact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        v-for="account in accounts" 
+                        :key="account.id"
+                    >                    
+                        <td class="text-center align-middle">{{ account.name }}<br/>({{ account.id }})</td>
+                        <td class="text-center align-middle">{{ account.active.canPropose ? 'Y' : 'N' }}</td>
+                        <td class="text-center align-middle">{{ account.active.canTransact ? 'Y' : 'N' }}</td>
+                        <td class="text-center align-middle">{{ account.owner.canPropose ? 'Y' : 'N' }}</td>
+                        <td class="text-center align-middle">{{ account.owner.canTransact ? 'Y' : 'N' }}</td>
+                        <td class="text-center align-middle">{{ account.memo.canSend ? 'Y' : 'N' }}</td>
+                        <td class="text-center align-middle"><input type="checkbox" name="import[]" /></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block"  v-if="step2">
+            Import Selected
+        </button>
         <b-modal
             id="loaderAnim"
             ref="loaderAnimModal"

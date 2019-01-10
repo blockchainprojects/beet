@@ -33,7 +33,7 @@ const createWindow = async () => {
     maximizable: false,
     maxHeight: 660,
     useContentSize: true, 
-    frame:true,
+    frame:false,
     transparent: true,
     webPreferences: {
       nodeIntegration: true,
