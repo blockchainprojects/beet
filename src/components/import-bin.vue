@@ -1,12 +1,24 @@
 <template>
     <div class="bottom">
-        <input type="file" @change="handleWalletSelect"/>
-        <input type="password" v-model="wallet_pass"/>
+        <input type="file" @change="handleWalletSelect" v-if="step1"/>
+        <input type="password" v-model="wallet_pass" v-if="step1"/>
         <button
             class="btn btn-lg btn-primary btn-block"
             type="submit"
             @click="decryptBackup"
+             v-if="step1"
         >{{ $t('next_btn') }}</button>
+          <table class="table small table-striped table-sm"  v-if="step2">
+            <tbody>
+                <tr
+                    v-for="account in accounts" 
+                    :key="account.id"
+                >
+                    <td class="text-left">{{ account.name }}</td>
+                    <td class="text-right">{{ account.id }}</td>
+                </tr>
+            </tbody>
+        </table>
         <b-modal
             id="loaderAnim"
             ref="loaderAnimModal"
@@ -39,6 +51,7 @@
     import {PrivateKey,PublicKey,Aes} from "bitsharesjs";
     import {compress, decompress} from "lzma";    
     import { Apis } from "bitsharesjs-ws";
+    import WalletHandler from "../lib/WalletHandler";
 
     export default {
         name: "ImportBin",
@@ -48,7 +61,10 @@
             return {
                 wallet_file: null,
                 wallet_pass: null,
-                errorMsg: ''
+                errorMsg: '',
+                step1:true,
+                step2:false,
+                accounts:[]
             };
         },
         methods: {
@@ -58,45 +74,21 @@
             decryptBackup: function() {
                 this.$refs.loaderAnimModal.show();
                 let reader = new FileReader();
-                reader.onload = evt => {
+                reader.onload = async evt => {
                     let backup_buffer = new Buffer.from(evt.target.result, "binary");                
-                    let private_key=PrivateKey.fromSeed(this.wallet_pass);
-                    let public_key = PublicKey.fromBuffer(backup_buffer.slice(0, 33));
-                    backup_buffer = backup_buffer.slice(33);
-                    backup_buffer = Aes.decrypt_with_checksum(
-                        private_key,
-                        public_key,
-                        null /*nonce*/,
-                        backup_buffer
-                    );
-                    decompress(backup_buffer, async (wallet_string) => {
-                        try {
-                            let wallet_object = JSON.parse(wallet_string);                            
+                    let wh=new WalletHandler(evt.target.result);
+                    try {
+                        let unlocked=await wh.unlock(this.wallet_pass);
+                        if (unlocked) {
+                            this.accounts=await wh.lookupAccounts();
+                            console.log(this.accounts);
+                            this.step1=false;
+                            this.step2=true;
                             this.$refs.loaderAnimModal.hide();
-                            let refs=[];
-                            for(let i=0;i<wallet_object.private_keys.length;i++) {
-                                refs.push(wallet_object.private_keys[i].pubkey);
-                            }
-                            await Apis.instance(
-                                    this.$store.state.SettingsStore.settings.selected_node,
-                                    true
-                                ).init_promise.then(() => {
-                                    return Apis.instance()
-                                    .db_api()
-                                    .exec("get_key_references", [refs])
-                                    .then(res => {                                   
-                                        console.log(res);     
-                                    });
-                                });
-                        } catch (error) {
-                            if (!wallet_string) wallet_string = "";
-                            console.error(
-                                "Error parsing wallet json",
-                                wallet_string.substring(0, 10) + "..."
-                            );
-                            //reject("Error parsing wallet json");
                         }
-                    });
+                    }catch(e) {
+                        console.log(e);
+                    }
                 };
                 reader.readAsBinaryString(this.wallet_file);
             }
