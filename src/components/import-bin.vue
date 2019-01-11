@@ -36,12 +36,12 @@
                         <td class="text-center align-middle">{{ account.owner.canPropose ? 'Y' : 'N' }}</td>
                         <td class="text-center align-middle">{{ account.owner.canTransact ? 'Y' : 'N' }}</td>
                         <td class="text-center align-middle">{{ account.memo.canSend ? 'Y' : 'N' }}</td>
-                        <td class="text-center align-middle"><input type="checkbox" name="import[]" /></td>
+                        <td class="text-center align-middle"><input type="checkbox" :id="account.name" :value="account.id" v-model="picked" /></td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <button class="btn btn-lg btn-primary btn-block"  v-if="step2">
+        <button class="btn btn-lg btn-primary btn-block mt-3"  v-if="step2 && picked.length>0">
             Import Selected
         </button>
         <b-modal
@@ -89,7 +89,8 @@
                 errorMsg: '',
                 step1:true,
                 step2:false,
-                accounts:[]
+                accounts:[],
+                picked:[]
             };
         },
         methods: {
