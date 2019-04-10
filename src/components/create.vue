@@ -17,7 +17,14 @@
                 @focus="s1c=''"
             >
             <p class="my-3 font-weight-bold">{{ $t('chain_cta') }}</p>
-            <select                
+
+             <b-dropdown id="dropdown-1" :text="selectedItem" class="m-md-2 mb-3 customDropDown">
+                <b-dropdown-item v-for="(chain, index) in chainList" :key="index" value="hello" @click="addItem(chain, index)" >
+                  {{ chain.name }} ({{ chain.short }})
+                </b-dropdown-item>
+              </b-dropdown>
+            <select 
+                v-if="false"               
                 id="chain-select"
                 v-model="selectedChain"
                 class="form-control mb-3"
@@ -205,10 +212,16 @@ export default {
       includeOwner: 0,
       errorMsg: "",
       selectedChain: 0,
-      chainList: Object.values(blockchains)
+      chainList: Object.values(blockchains),
+      selectedItem: 'Select Chain:'
     };
   },
   methods: {
+    addItem(chain, index){
+      console.log(chain, index);
+      this.selectedChain = index
+      this.selectedItem = chain.name    
+    },
     step1: function() {
       this.step = 1;
     },
@@ -324,3 +337,72 @@ export default {
   }
 };
 </script>
+<style >
+.customDropDown{
+  width: 90%;
+  color: #495057;
+  background-color: #F4F8FB !important;
+  font-size: 1rem;
+}
+#dropdown-1__BV_toggle_{
+  border-color: gainsboro;
+}
+.customDropDown:hover{
+  color: #495057;
+  background-color: #F4F8FB;
+}
+.dropdown-menu.show{
+  width: 100% !important;
+  top: 15px !important;
+  background: white;
+  box-shadow: lightgrey 0px 1px 9px 0px;
+  padding: 0.3rem 0 !important;
+}
+.dropdown-menu.show:before {
+    content: "";
+    top: -6px;
+    left: 93%;
+    z-index: -1;
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: white;
+    transform: rotate(45deg);
+    box-shadow: -1px -1px 8px -3px rgba(0, 0, 0, 0.9);
+   }
+.btn.btn-secondary.dropdown-toggle{
+  background-color: #F4F8FB !important;
+  color: #495057;
+  text-align: left;
+}
+.dropdown-item:focus{
+  outline: none;
+  background: #C7088E;
+  color: #F4F8FB;
+}
+.dropdown-toggle::after {
+    position: absolute;
+    top: 15px;
+    left: 93%;
+    vertical-align: 0.255em;
+    content: "";
+    border-top: 0.3em solid;
+    border-right: 0.3em solid transparent;
+    border-bottom: 0;
+    border-left: 0.3em solid transparent;
+}
+.dropdown-item {
+  border-radius: 3px;
+  width: calc(100% - 8px);
+  background: #F4F8FB;
+  border-bottom: 1px solid #F4F8FB;
+  margin: 4px;
+}
+.dropdown-item:first-child {
+  margin-top: 0;
+} 
+.dropdown-item:last-child {
+  margin-bottom: 0;
+} 
+</style>
