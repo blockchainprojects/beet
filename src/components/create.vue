@@ -18,8 +18,8 @@
             >
             <p class="my-3 font-weight-bold">{{ $t('chain_cta') }}</p>
 
-             <b-dropdown id="dropdown-1" text="Select Chain:" class="m-md-2 mb-3 customDropDown">
-                <b-dropdown-item v-for="(chain, index) in chainList" :key="index" :value="chain.name" >
+             <b-dropdown id="dropdown-1" :text="selectedItem" class="m-md-2 mb-3 customDropDown">
+                <b-dropdown-item v-for="(chain, index) in chainList" :key="index" value="hello" @click="addItem(chain, index)" >
                   {{ chain.name }} ({{ chain.short }})
                 </b-dropdown-item>
               </b-dropdown>
@@ -212,10 +212,16 @@ export default {
       includeOwner: 0,
       errorMsg: "",
       selectedChain: 0,
-      chainList: Object.values(blockchains)
+      chainList: Object.values(blockchains),
+      selectedItem: 'Select Chain:'
     };
   },
   methods: {
+    addItem(chain, index){
+      console.log(chain, index);
+      this.selectedChain = index
+      this.selectedItem = chain.name    
+    },
     step1: function() {
       this.step = 1;
     },
@@ -349,20 +355,21 @@ export default {
   width: 100% !important;
   top: 15px !important;
   background: white;
+  box-shadow: lightgrey 0px 1px 9px 0px;
+  padding: 0.3rem 0 !important;
 }
 .dropdown-menu.show:before {
-     content: "";
-     position: absolute;
-     top: -10px;
-     left: 90%;
-     width: 0;
-     height: 0;
-     border: 10px solid transparent;
-     border-bottom-color: #F4F8FB;
-     border-top: 0;
-     border-left: 10;
-     margin-left: 10px;
-     margin-bottom: -10px;
+    content: "";
+    top: -6px;
+    left: 93%;
+    z-index: -1;
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: white;
+    transform: rotate(45deg);
+    box-shadow: -1px -1px 8px -3px rgba(0, 0, 0, 0.9);
    }
 .btn.btn-secondary.dropdown-toggle{
   background-color: #F4F8FB !important;
